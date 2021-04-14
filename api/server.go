@@ -13,14 +13,14 @@ type Server struct {
 }
 
 // NewAPIServer creates a new Server instance.
-func NewAPIServer() *Server {
+func NewAPIServer() (*Server, error) {
 	server := &http.Server{
 		Addr: "0.0.0.0:8080",
 	}
 
 	return &Server{
 		server: server,
-	}
+	}, nil
 }
 
 // Start runs the Server.
