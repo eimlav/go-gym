@@ -1,11 +1,12 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/signal"
 
 	"github.com/eimlav/go-gym/config"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/eimlav/go-gym/db"
 	"gorm.io/driver/sqlite"
@@ -41,17 +42,17 @@ func connectDatabase() error {
 func main() {
 	// Get configuration
 	if err := config.GetConfig(); err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
 
 	// Setup database and API server
 	if err := connectDatabase(); err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
 
 	apiServer, err := api.NewAPIServer()
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
 
 	log.Printf("API server listening on %s", apiServer.GetAddress())

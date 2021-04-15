@@ -62,6 +62,10 @@ Create a booking record.
 - `400 Bad Request` Paramters supplied were invalid.
 - `500 Internal Server Error` Unexpected server error.
 
+## Database Schema
+
+The schema for the database can be found in `db/models/models.go`.
+
 ## Examples
 
 ### Create a class

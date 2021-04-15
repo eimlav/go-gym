@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -49,8 +48,6 @@ func (m MockTime) Match(v driver.Value) bool {
 	if err != nil {
 		return false
 	}
-
-	log.Println(value.UTC(), actualTime.UTC())
 
 	return ok && value.UTC() == actualTime.UTC()
 }
