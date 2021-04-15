@@ -6,7 +6,9 @@ import (
 	"github.com/eimlav/go-gym/db/models"
 	bookingResolvers "github.com/eimlav/go-gym/db/resolvers/bookings"
 	classEventResolvers "github.com/eimlav/go-gym/db/resolvers/classEvents"
+	"github.com/eimlav/go-gym/errors"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type BookingsPOSTRequest struct {
@@ -17,7 +19,7 @@ type BookingsPOSTRequest struct {
 func HandleBookingsPOST(c *gin.Context) {
 	var content BookingsPOSTRequest
 	if err := c.ShouldBindJSON(&content); err != nil {
-		responses.BadRequest(c, "invalid request parameters")
+		responses.BadRequest(c, errors.ErrorAPIInvalidRequestParameters.Error())
 
 		return
 	}
@@ -32,17 +34,19 @@ func HandleBookingsPOST(c *gin.Context) {
 	// Check ClassEvent exists
 	exists, err := classEventResolvers.Exists(tx, uint(*content.ClassEventID))
 	if err != nil {
-		responses.InternalServerError(c, "Something went wrong creating booking.")
+		log.Errorf("Error checking existence of class event: %v", err)
+		responses.InternalServerError(c, errors.ErrorAPIInternalError.Error())
 
 		return
 	} else if !exists {
-		responses.BadRequest(c, "Class event does not exist.")
+		responses.BadRequest(c, errors.ErrorAPIClassEventDoeNotExist.Error())
 
 		return
 	}
 
 	if err := bookingResolvers.CreateBooking(tx, booking); err != nil {
-		responses.InternalServerError(c, "Something went wrong creating booking.")
+		log.Errorf("Error creating booking: %v", err)
+		responses.InternalServerError(c, errors.ErrorAPIInternalError.Error())
 
 		return
 	}

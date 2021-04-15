@@ -8,7 +8,9 @@ import (
 	"github.com/eimlav/go-gym/db/models"
 	classEventResolvers "github.com/eimlav/go-gym/db/resolvers/classEvents"
 	classResolvers "github.com/eimlav/go-gym/db/resolvers/classes"
+	"github.com/eimlav/go-gym/errors"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type ClassesPOSTRequest struct {
@@ -28,13 +30,13 @@ func calculateClassDuration(startDate, endDate time.Time) int {
 func HandleClassesPOST(c *gin.Context) {
 	var content ClassesPOSTRequest
 	if err := c.ShouldBindJSON(&content); err != nil {
-		responses.BadRequest(c, "invalid request parameters")
+		responses.BadRequest(c, errors.ErrorAPIInvalidRequestParameters.Error())
 
 		return
 	}
 
 	if content.StartDate.After(content.EndDate) {
-		responses.BadRequest(c, "start date should be before end date")
+		responses.BadRequest(c, errors.ErrorAPIEndBeforeStartDate.Error())
 
 		return
 	}
@@ -49,7 +51,8 @@ func HandleClassesPOST(c *gin.Context) {
 	tx := db.GetDB().Begin()
 
 	if err := classResolvers.CreateClass(tx, class); err != nil {
-		responses.InternalServerError(c, "Something went wrong creating class.")
+		log.Errorf("Error creating class: %v", err)
+		responses.InternalServerError(c, errors.ErrorAPIInternalError.Error())
 
 		return
 	}
@@ -63,7 +66,8 @@ func HandleClassesPOST(c *gin.Context) {
 			Date:    classDate,
 		}
 		if err := classEventResolvers.CreateClassEvent(tx, classEvent); err != nil {
-			responses.InternalServerError(c, "Something went wrong creating class event.")
+			log.Errorf("Error creating class event: %v", err)
+			responses.InternalServerError(c, errors.ErrorAPIInternalError.Error())
 
 			return
 		}
@@ -72,7 +76,8 @@ func HandleClassesPOST(c *gin.Context) {
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 
-		responses.InternalServerError(c, "Something went wrong creating class.")
+		log.Errorf("Error commiting transaction: %v", err)
+		responses.InternalServerError(c, errors.ErrorAPIInternalError.Error())
 
 		return
 	}
