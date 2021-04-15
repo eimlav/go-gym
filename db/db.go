@@ -16,12 +16,12 @@ func GetDB() *gorm.DB {
 
 // SetupDatabase creates a new database instance.
 func SetupDatabase(db *gorm.DB) error {
-	DB = db
+	DB = db.Debug()
 
 	return nil
 }
 
 // Run GORM AutoMigrate function on database.
 func MigrateDatabase(db *gorm.DB) error {
-	return db.AutoMigrate(models.Class{}, models.ClassEvent{})
+	return db.AutoMigrate(models.Class{}, models.ClassEvent{}, models.Booking{})
 }

@@ -22,3 +22,11 @@ type ClassEvent struct {
 	Class   Class
 	Date    time.Time
 }
+
+// Booking represents a booking of a ClassEvent.
+type Booking struct {
+	gorm.Model
+	ClassEventID uint
+	ClassEvent   ClassEvent
+	MemberName   string
+}

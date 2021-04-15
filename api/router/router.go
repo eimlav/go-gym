@@ -14,6 +14,7 @@ func NewRouter() http.Handler {
 	{
 		v1Router := apiRouter.Group("/v1")
 		{
+			v1Router.POST("/bookings", v1.HandleBookingsPOST)
 			v1Router.POST("/classes", v1.HandleClassesPOST)
 		}
 	}

@@ -12,10 +12,10 @@ import (
 )
 
 type ClassesPOSTRequest struct {
-	Name      string    `json:"name" validate:"required min=2,max=128"`
+	Name      string    `json:"name" binding:"required,min=2,max=128"`
 	StartDate time.Time `json:"start_date" validate:"required" time_format:"2006-01-02T15:04:05Z07:00"`
 	EndDate   time.Time `json:"end_date" validate:"required" time_format:"2006-01-02T15:04:05Z07:00"`
-	Capacity  *int      `json:"capacity" validate:"required, gt=0"`
+	Capacity  *int      `json:"capacity" binding:"required,gt=0"`
 }
 
 // Returns the number of days the class should last for inclusive of the end date.
@@ -72,8 +72,7 @@ func HandleClassesPOST(c *gin.Context) {
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
 
-		// responses.InternalServerError(c, "Something went wrong creating class.")
-		responses.InternalServerError(c, err.Error())
+		responses.InternalServerError(c, "Something went wrong creating class.")
 
 		return
 	}

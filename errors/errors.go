@@ -12,5 +12,6 @@ var (
 	// ErrorDBNotFound on db not found.
 	ErrorDBNotFound = errors.New("database not found")
 
+	// ErrorAPIServerDBMissing on db missing from APIServer.
 	ErrorAPIServerDBMissing = errors.New("a *gorm.DB is required by APIServer")
 )
