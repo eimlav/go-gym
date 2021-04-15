@@ -38,7 +38,7 @@ Create a class and associated class events.
 
 - `name` | string | required,min=2,max=128
 - `start_date` | time.Time | required time_format:"2006-01-02T15:04:05Z07:00"
-- `name` | time.Time | required time_format:"2006-01-02T15:04:05Z07:00"
+- `end_date` | time.Time | required time_format:"2006-01-02T15:04:05Z07:00"
 - `capacity` | int | required gt=0
 
 #### Responses
