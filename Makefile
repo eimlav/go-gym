@@ -6,3 +6,6 @@ run:
 
 reset-db:
 	rm go-gym.db
+
+test:
+	go test ./...

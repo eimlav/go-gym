@@ -6,6 +6,8 @@ import (
 	"os/signal"
 
 	"github.com/eimlav/go-gym/db"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	"github.com/eimlav/go-gym/api"
 )
@@ -16,9 +18,27 @@ func awaitOSSignal() {
 	<-done
 }
 
+func connectDatabase() error {
+	// Setup database and API server
+	gormDB, err := gorm.Open(sqlite.Open("go-gym.db"), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	if err := db.SetupDatabase(gormDB); err != nil {
+		return err
+	}
+
+	if err := db.MigrateDatabase(db.GetDB()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	// Setup database and API server
-	if err := db.SetupDatabase(); err != nil {
+	if err := connectDatabase(); err != nil {
 		panic(err.Error())
 	}
 

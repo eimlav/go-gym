@@ -1,8 +1,10 @@
 package db
 
 import (
-	"gorm.io/driver/sqlite"
+	"github.com/eimlav/go-gym/db/models"
 	"gorm.io/gorm"
+
+	_ "gorm.io/driver/sqlite"
 )
 
 var DB *gorm.DB
@@ -13,22 +15,13 @@ func GetDB() *gorm.DB {
 }
 
 // SetupDatabase creates a new database instance.
-func SetupDatabase() error {
-	db, err := gorm.Open(sqlite.Open("go-gym.db"), &gorm.Config{})
-	if err != nil {
-		return err
-	}
-
-	if err = migrateDatabase(db); err != nil {
-		return err
-	}
-
+func SetupDatabase(db *gorm.DB) error {
 	DB = db
 
 	return nil
 }
 
 // Run GORM AutoMigrate function on database.
-func migrateDatabase(db *gorm.DB) error {
-	return db.AutoMigrate(Class{}, ClassEvent{})
+func MigrateDatabase(db *gorm.DB) error {
+	return db.AutoMigrate(models.Class{}, models.ClassEvent{})
 }

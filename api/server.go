@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/eimlav/go-gym/api/router"
+
 	"github.com/eimlav/go-gym/errors"
 )
 
@@ -14,8 +16,11 @@ type Server struct {
 
 // NewAPIServer creates a new Server instance.
 func NewAPIServer() (*Server, error) {
+	router := router.NewRouter()
+
 	server := &http.Server{
-		Addr: "0.0.0.0:8080",
+		Addr:    "0.0.0.0:8080",
+		Handler: router,
 	}
 
 	return &Server{

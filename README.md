@@ -1,3 +1,46 @@
 # go-gym
 
 Basic Gym class booking API built in Go.
+
+GORM and a SQLite database is used by the application, which it will generate itself.
+
+## Running
+
+1. Run `make build` to build the application.
+
+2. Run `make run` to run the application.
+
+## Testing
+
+Run `make test` to run tests.
+
+## Endpoints
+
+### `/api/v1/classes` POST
+
+#### Body Parameters
+
+- `name` | string | required min=2,max=128
+- `start_date` | time.Time | required time_format:"2006-01-02T15:04:05Z07:00"
+- `name` | time.Time | required time_format:"2006-01-02T15:04:05Z07:00"
+- `capacity` | int | required gt=0
+
+#### Responses
+
+- `201 Created` Class was created successfully
+- `400 Bad Request` Paramters supplied were invalid.
+- `500 Internal Server Error` Unexpected server error.
+
+## Examples
+
+### Create a class
+
+```
+⇒  curl -i -X POST -H "Content-Type:application/json"  -d '{"name":"Yoga","start_date":"2021-04-02T15:00:00+00:00","end_date":"2021-04-04T15:00:00+00:00","capacity":0}' 0.0.0.0:8080/api/v1/classes
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Date: Thu, 14 Apr 2021 20:46:15 GMT
+Content-Length: 8
+
+{"id":9}
+```
