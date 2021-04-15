@@ -2,10 +2,12 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/eimlav/go-gym/api/router"
 
+	"github.com/eimlav/go-gym/config"
 	"github.com/eimlav/go-gym/errors"
 )
 
@@ -16,10 +18,11 @@ type Server struct {
 
 // NewAPIServer creates a new Server instance.
 func NewAPIServer() (*Server, error) {
+	cfg := config.Cfg
 	router := router.NewRouter()
 
 	server := &http.Server{
-		Addr:    "0.0.0.0:8080",
+		Addr:    fmt.Sprintf("%s:%s", cfg.Server.Address, cfg.Server.Port),
 		Handler: router,
 	}
 

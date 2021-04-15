@@ -2,17 +2,31 @@
 
 Basic Gym class booking API built in Go.
 
-GORM and a SQLite database is used by the application, which it will generate itself.
+GORM and a SQLite database (`go-gym.db`) is used by the application.
+
+## Setup
+
+Run `make build` to build the application.
 
 ## Running
 
-1. Run `make build` to build the application.
-
-2. Run `make run` to run the application.
+Run `make run` to run the application.
 
 ## Testing
 
 Run `make test` to run tests.
+
+## Config
+
+You can configure go-gym using the config.yaml file:
+
+```
+server:
+    address: <IP address of API server>
+    port: <Port to expose API server on>
+```
+
+This file contains preconfigured default values to get up and running quickly.
 
 ## Endpoints
 

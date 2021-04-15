@@ -16,7 +16,7 @@ func GetDB() *gorm.DB {
 
 // SetupDatabase creates a new database instance.
 func SetupDatabase(db *gorm.DB) error {
-	DB = db.Debug()
+	DB = db
 
 	return nil
 }

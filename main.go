@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/eimlav/go-gym/config"
+
 	"github.com/eimlav/go-gym/db"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -37,6 +39,11 @@ func connectDatabase() error {
 }
 
 func main() {
+	// Get configuration
+	if err := config.GetConfig(); err != nil {
+		panic(err.Error())
+	}
+
 	// Setup database and API server
 	if err := connectDatabase(); err != nil {
 		panic(err.Error())
