@@ -2,7 +2,6 @@ package classEvents
 
 import (
 	"github.com/eimlav/go-gym/db/models"
-	"github.com/go-errors/errors"
 	"gorm.io/gorm"
 )
 
@@ -13,12 +12,11 @@ func CreateClassEvent(db *gorm.DB, classEvent *models.ClassEvent) error {
 
 // Exists checks for the existence of a ClassEvent.
 func Exists(db *gorm.DB, id uint) (bool, error) {
-	err := db.Where("id = ?", id).Find(&models.ClassEvent{}).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return false, nil
-	} else if err != nil {
+	classEvent := &models.ClassEvent{}
+	err := db.Where("id = ?", id).Find(classEvent).Error
+	if err != nil {
 		return false, err
 	}
 
-	return true, nil
+	return classEvent.ID != 0, nil
 }

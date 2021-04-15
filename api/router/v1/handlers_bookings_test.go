@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/eimlav/go-gym/testutils"
 	"github.com/gin-gonic/gin"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
 func generateBookingsPOSTRequest(memberName string, classEventID int) (req BookingsPOSTRequest, err error) {
@@ -32,7 +32,9 @@ func TestHandlersBookingsPOST(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	rows := sqlmock.NewRows([]string{"1", "2021-04-14 22:21:19.618018+01:00", "2021-04-14 22:21:19.618018+01:00", "", "1", "2006-01-02 15:04:05+07:00"})
+	rows := sqlmock.NewRows(
+		[]string{"id", "created_at", "updated_at", "deleted_at", "class_id", "date"},
+	).AddRow("1", time.Now(), time.Now(), nil, "1", time.Now())
 	mock.ExpectQuery("SELECT \\* FROM `class_events`").WithArgs(1).WillReturnRows(rows)
 	mock.ExpectExec("INSERT INTO `bookings`").WillReturnResult(sqlmock.NewResult(1, 1))
 
@@ -59,7 +61,7 @@ func TestHandlersBookingsPOST_ClassEventDoesNotExist(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	mock.ExpectQuery("SELECT \\* FROM `class_events`").WithArgs(1).WillReturnError(gorm.ErrRecordNotFound)
+	mock.ExpectQuery("SELECT \\* FROM `class_events`").WithArgs(1).WillReturnRows(&sqlmock.Rows{})
 
 	w := httptest.NewRecorder()
 	router := gin.Default()
