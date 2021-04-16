@@ -140,3 +140,30 @@ func TestHandlersClassesPOST_InvalidParameters(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, w.Code)
 	}
 }
+
+func TestCalculateClassDuration(t *testing.T) {
+	dateOne, err := time.Parse(time.RFC3339, "2021-04-20T15:00:00+00:00")
+	assert.NoError(t, err)
+	dateTwo, err := time.Parse(time.RFC3339, "2021-04-18T15:00:00+00:00")
+	assert.NoError(t, err)
+	dateThree, err := time.Parse(time.RFC3339, "2021-04-22T15:00:00+00:00")
+	assert.NoError(t, err)
+
+	testCases := []struct {
+		StartDate   time.Time
+		EndDate     time.Time
+		Duration    int
+		ThrowsError bool
+	}{
+		{dateOne, dateOne, 1, false},
+		{dateOne, dateThree, 3, false},
+		{dateOne, dateTwo, 0, true},
+		{dateTwo, dateThree, 5, false},
+	}
+
+	for _, test := range testCases {
+		duration, err := calculateClassDuration(test.StartDate, test.EndDate)
+		assert.Equal(t, test.Duration, duration)
+		assert.Equal(t, err != nil, test.ThrowsError)
+	}
+}

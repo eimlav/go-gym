@@ -13,9 +13,9 @@ type Config struct {
 	} `yaml:"server"`
 }
 
-func GetConfig() error {
+func GetConfig(configDir string) error {
 	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(configDir)
 
 	var config Config
 

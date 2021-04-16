@@ -41,7 +41,7 @@ func connectDatabase() error {
 
 func main() {
 	// Get configuration
-	if err := config.GetConfig(); err != nil {
+	if err := config.GetConfig("."); err != nil {
 		log.Fatal(err)
 	}
 

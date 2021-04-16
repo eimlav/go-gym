@@ -10,7 +10,7 @@ Run `make build` to build the application.
 
 ## Running
 
-Run `make run` to run the application.
+Run `make run` to run the application. By default it will run on port `:8080`. This can be configured [below](#config)
 
 ## Testing
 
@@ -26,7 +26,7 @@ server:
     port: <Port to expose API server on>
 ```
 
-This file contains preconfigured default values to get up and running quickly.
+This file contains preconfigured default values to get up and running quickly. Include this file in the same directory you are running the go-gym binary.
 
 ## Endpoints
 
@@ -62,9 +62,11 @@ Create a booking record.
 - `400 Bad Request` Paramters supplied were invalid.
 - `500 Internal Server Error` Unexpected server error.
 
-## Database Schema
+## Database
 
 The schema for the database can be found in `db/models/models.go`.
+
+In order to open the database, use `sqlite3 go-gym.db`. You may need to download the CLI tool first which you can find [here](https://www.sqlite.org/download.html).
 
 ## Examples
 

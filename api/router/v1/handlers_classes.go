@@ -21,10 +21,15 @@ type ClassesPOSTRequest struct {
 }
 
 // Returns the number of days the class should last for inclusive of the end date.
-func calculateClassDuration(startDate, endDate time.Time) int {
+func calculateClassDuration(startDate, endDate time.Time) (int, error) {
+	if startDate.After(endDate) {
+		return 0, errors.ErrorAPIEndBeforeStartDate
+	}
+
 	newStartDate := time.Date(startDate.Year(), time.Month(startDate.Month()), startDate.Day(), 0, 0, 0, 0, time.UTC)
 	newEndDate := time.Date(endDate.Year(), time.Month(endDate.Month()), endDate.Day(), 0, 0, 0, 0, time.UTC)
-	return int(newEndDate.Sub(newStartDate).Hours() / 24)
+
+	return int(newEndDate.Sub(newStartDate).Hours()/24) + 1, nil
 }
 
 func HandleClassesPOST(c *gin.Context) {
@@ -35,7 +40,8 @@ func HandleClassesPOST(c *gin.Context) {
 		return
 	}
 
-	if content.StartDate.After(content.EndDate) {
+	classDuration, err := calculateClassDuration(content.StartDate, content.EndDate)
+	if err != nil {
 		responses.BadRequest(c, errors.ErrorAPIEndBeforeStartDate.Error())
 
 		return
@@ -57,9 +63,7 @@ func HandleClassesPOST(c *gin.Context) {
 		return
 	}
 
-	classDuration := calculateClassDuration(class.StartDate, class.EndDate)
-
-	for classEventIndex := 0; classEventIndex < classDuration+1; classEventIndex++ {
+	for classEventIndex := 0; classEventIndex < classDuration; classEventIndex++ {
 		classDate := class.StartDate.AddDate(0, 0, classEventIndex)
 		classEvent := &models.ClassEvent{
 			ClassID: class.ID,
